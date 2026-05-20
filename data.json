@@ -1,0 +1,38 @@
+{
+  "site": {
+    "title": "Nhật ký lữ hành",
+    "subtitle": "Những nơi tôi đã đi qua",
+    "author": "Tên của bạn",
+    "bio": "Tôi đi để tìm lại chính mình, và đôi khi tìm thấy cả thế giới.",
+    "avatar": ""
+  },
+  "trips": [
+    {
+      "id": "trip_001",
+      "title": "Hà Giang - Mùa tam giác mạch",
+      "location": "Hà Giang, Việt Nam",
+      "date": "2024-11",
+      "cover": "https://lh3.googleusercontent.com/placeholder1",
+      "description": "Những cánh đồng tam giác mạch nở rộ tím hồng trên cao nguyên đá. Con đường đèo Mã Pì Lèng uốn lượn qua vách núi dựng đứng, phía dưới là dòng Nho Quế xanh thẳm.",
+      "tags": ["thiên nhiên", "núi", "hoa"],
+      "photos": [
+        { "url": "https://lh3.googleusercontent.com/placeholder1", "caption": "Đèo Mã Pì Lèng" },
+        { "url": "https://lh3.googleusercontent.com/placeholder2", "caption": "Cánh đồng tam giác mạch" }
+      ],
+      "featured": true
+    },
+    {
+      "id": "trip_002",
+      "title": "Hội An - Đêm đèn lồng",
+      "location": "Hội An, Quảng Nam",
+      "date": "2024-08",
+      "cover": "https://lh3.googleusercontent.com/placeholder3",
+      "description": "Phố cổ lung linh ánh đèn lồng mỗi tối. Mùi cao lầu, bánh mì Phượng quyện trong gió sông Thu Bồn.",
+      "tags": ["phố cổ", "văn hóa", "ẩm thực"],
+      "photos": [
+        { "url": "https://lh3.googleusercontent.com/placeholder3", "caption": "Phố đèn lồng" }
+      ],
+      "featured": false
+    }
+  ]
+}

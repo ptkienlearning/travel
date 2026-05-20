@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nhật ký lữ hành</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1814;
+    --ink-light: #6b6560;
+    --ink-faint: #b5b0aa;
+    --paper: #faf9f7;
+    --paper-warm: #f3f0eb;
+    --accent: #8b6f4e;
+    --accent-light: #c9a97a;
+    --border: #e8e3dc;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.25rem 3rem;
+    background: rgba(250,249,247,0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; text-align: center;
+    padding: 6rem 2rem 4rem;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 60%, #ede8e0 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+  .hero-title em { font-style: italic; color: var(--accent); }
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--ink-light);
+    max-width: 420px;
+    line-height: 1.8;
+  }
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem;
+    display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+    color: var(--ink-faint); font-size: 0.7rem; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    animation: float 2s ease-in-out infinite;
+  }
+  .scroll-hint::after {
+    content: '';
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--ink-faint), transparent);
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(6px)} }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 0; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 300;
+    color: var(--ink);
+    margin-bottom: 3rem;
+    line-height: 1.2;
+  }
+
+  /* ── FILTER ── */
+  .filter-bar {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    margin-bottom: 3rem;
+  }
+  .filter-btn {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink-light);
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  /* ── GRID ── */
+  .trips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+  }
+  .trip-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .trip-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  }
+  .trip-card.featured { grid-column: span 2; }
+  .trip-card-img {
+    aspect-ratio: 4/3;
+    background: var(--paper-warm);
+    overflow: hidden;
+    position: relative;
+  }
+  .trip-card.featured .trip-card-img { aspect-ratio: 16/7; }
+  .trip-card-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .trip-card:hover .trip-card-img img { transform: scale(1.04); }
+  .trip-card-img .placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--paper-warm);
+    color: var(--ink-faint);
+    font-size: 2rem;
+  }
+  .trip-card-body { padding: 1.5rem; }
+  .trip-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+  .trip-location {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .trip-date {
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+  }
+  .trip-title {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    font-weight: 400;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+    color: var(--ink);
+  }
+  .trip-card.featured .trip-title { font-size: 2rem; }
+  .trip-excerpt {
+    font-size: 0.875rem;
+    color: var(--ink-light);
+    line-height: 1.75;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .trip-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+  .tag {
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border: 1px solid var(--border);
+    padding: 0.2rem 0.65rem;
+    border-radius: 100px;
+  }
+  .no-trips {
+    text-align: center;
+    padding: 4rem;
+    color: var(--ink-faint);
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    font-style: italic;
+    grid-column: 1 / -1;
+  }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    display: none;
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(20,17,13,0.96);
+    overflow-y: auto;
+  }
+  .lightbox.open { display: flex; flex-direction: column; }
+  .lb-close {
+    position: fixed; top: 1.5rem; right: 2rem;
+    background: none; border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 1.5rem; cursor: pointer;
+    z-index: 1001;
+    transition: color 0.2s;
+  }
+  .lb-close:hover { color: white; }
+  .lb-content {
+    max-width: 900px; margin: 0 auto;
+    padding: 5rem 2rem 4rem;
+    color: white;
+  }
+  .lb-eyebrow {
+    font-size: 0.68rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--accent-light);
+    margin-bottom: 0.75rem;
+  }
+  .lb-title {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 300; line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+  .lb-date { font-size: 0.8rem; color: rgba(255,255,255,0.4); margin-bottom: 2rem; }
+  .lb-desc {
+    font-size: 1rem; line-height: 1.9;
+    color: rgba(255,255,255,0.75);
+    max-width: 620px; margin-bottom: 3rem;
+    font-family: var(--serif); font-size: 1.1rem;
+  }
+  .lb-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .lb-photo {
+    border-radius: 2px; overflow: hidden;
+    background: rgba(255,255,255,0.05);
+  }
+  .lb-photo img {
+    width: 100%; display: block;
+    transition: transform 0.4s ease;
+  }
+  .lb-photo:hover img { transform: scale(1.03); }
+  .lb-photo-caption {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.72rem; color: rgba(255,255,255,0.35);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── ABOUT ── */
+  .about-section { background: var(--paper-warm); }
+  .about-inner {
+    display: grid; grid-template-columns: 1fr 2fr;
+    gap: 4rem; align-items: center;
+    max-width: 860px; margin: 0 auto; padding: 0 2rem;
+  }
+  .about-avatar {
+    width: 100%; aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--border);
+    overflow: hidden;
+    max-width: 180px;
+    margin: 0 auto;
+  }
+  .about-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .about-avatar-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 3rem;
+    color: var(--ink-faint);
+  }
+  .about-name {
+    font-family: var(--serif);
+    font-size: 2rem; font-weight: 300;
+    margin-bottom: 1rem;
+  }
+  .about-bio { color: var(--ink-light); line-height: 1.9; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2.5rem;
+    text-align: center;
+    color: var(--ink-faint);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center; padding: 4rem;
+    color: var(--ink-faint);
+    font-family: var(--serif); font-style: italic;
+    grid-column: 1/-1;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .trip-card.featured { grid-column: span 1; }
+    .about-inner { grid-template-columns: 1fr; text-align: center; }
+    .about-avatar { max-width: 120px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" id="nav-logo" href="#">Nhật ký lữ hành</a>
+  <div class="nav-links">
+    <a href="#journeys">Chuyến đi</a>
+    <a href="#about">Về tôi</a>
+    <a href="admin.html">Admin ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Nhật ký lữ hành</p>
+  <h1 class="hero-title" id="hero-title">Những nơi<br><em>tôi đã qua</em></h1>
+  <p class="hero-sub" id="hero-sub">Tôi đi để tìm lại chính mình, và đôi khi tìm thấy cả thế giới.</p>
+  <div class="scroll-hint">Khám phá</div>
+</section>
+
+<!-- JOURNEYS -->
+<section id="journeys">
+  <div class="container">
+    <p class="section-label">Các chuyến đi</p>
+    <h2 class="section-title">Nhật ký</h2>
+    <div class="filter-bar" id="filter-bar">
+      <button class="filter-btn active" data-filter="all">Tất cả</button>
+    </div>
+    <div class="trips-grid" id="trips-grid">
+      <div class="loading">Đang tải...</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about-section">
+  <div class="about-inner">
+    <div class="about-avatar" id="about-avatar">
+      <div class="about-avatar-placeholder">✦</div>
+    </div>
+    <div>
+      <p class="section-label">Về tôi</p>
+      <h2 class="about-name" id="about-name">Tên của bạn</h2>
+      <p class="about-bio" id="about-bio"></p>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <div class="lb-content" id="lb-content"></div>
+</div>
+
+<footer>
+  <p id="footer-text">© 2024 Nhật ký lữ hành &mdash; Được làm bằng ❤ và những chuyến đi</p>
+</footer>
+
+<script>
+let DATA = null;
+
+async function loadData() {
+  try {
+    const r = await fetch('data.json?t=' + Date.now());
+    DATA = await r.json();
+    render();
+  } catch(e) {
+    document.getElementById('trips-grid').innerHTML = '<div class="no-trips">Chưa có chuyến đi nào được ghi lại.</div>';
+  }
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const [y, m] = d.split('-');
+  const months = ['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
+                  'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+  return (m ? months[+m-1] + ', ' : '') + y;
+}
+
+function render(filter='all') {
+  const site = DATA.site;
+  // Update meta
+  document.title = site.title;
+  document.getElementById('nav-logo').textContent = site.title;
+  document.getElementById('hero-title').innerHTML = site.title.replace(' ', '<br><em>') + '</em>';
+  document.getElementById('hero-sub').textContent = site.subtitle;
+  document.getElementById('about-name').textContent = site.author;
+  document.getElementById('about-bio').textContent = site.bio;
+  document.getElementById('footer-text').textContent = `© ${new Date().getFullYear()} ${site.title} — Được làm bằng ❤ và những chuyến đi`;
+
+  if (site.avatar) {
+    document.getElementById('about-avatar').innerHTML = `<img src="${site.avatar}" alt="${site.author}">`;
+  }
+
+  // Tags
+  const allTags = [...new Set(DATA.trips.flatMap(t => t.tags || []))];
+  const filterBar = document.getElementById('filter-bar');
+  filterBar.innerHTML = '<button class="filter-btn' + (filter==='all'?' active':'') + '" data-filter="all">Tất cả</button>';
+  allTags.forEach(tag => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (filter===tag?' active':'');
+    btn.dataset.filter = tag;
+    btn.textContent = tag;
+    filterBar.appendChild(btn);
+  });
+  filterBar.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => render(btn.dataset.filter));
+  });
+
+  // Trips
+  let trips = DATA.trips;
+  if (filter !== 'all') trips = trips.filter(t => (t.tags||[]).includes(filter));
+  trips = [...trips].sort((a,b) => (b.date||'').localeCompare(a.date||''));
+
+  const grid = document.getElementById('trips-grid');
+  if (!trips.length) {
+    grid.innerHTML = '<div class="no-trips">Không có chuyến đi nào phù hợp.</div>';
+    return;
+  }
+
+  grid.innerHTML = trips.map(trip => {
+    const imgHtml = trip.cover
+      ? `<img src="${trip.cover}" alt="${trip.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>✦</div>'">`
+      : `<div class="placeholder">✦</div>`;
+    const tagsHtml = (trip.tags||[]).map(t => `<span class="tag">${t}</span>`).join('');
+    return `
+      <a class="trip-card${trip.featured?' featured':''}" href="#" onclick="openLightbox('${trip.id}'); return false;">
+        <div class="trip-card-img">${imgHtml}</div>
+        <div class="trip-card-body">
+          <div class="trip-meta">
+            <span class="trip-location">${trip.location||''}</span>
+            <span class="trip-date">${formatDate(trip.date)}</span>
+          </div>
+          <h3 class="trip-title">${trip.title}</h3>
+          <p class="trip-excerpt">${trip.description||''}</p>
+          <div class="trip-tags">${tagsHtml}</div>
+        </div>
+      </a>`;
+  }).join('');
+}
+
+function openLightbox(id) {
+  const trip = DATA.trips.find(t => t.id === id);
+  if (!trip) return;
+  const photos = (trip.photos||[]).map(p => `
+    <div class="lb-photo">
+      <img src="${p.url}" alt="${p.caption||''}" loading="lazy">
+      ${p.caption ? `<p class="lb-photo-caption">${p.caption}</p>` : ''}
+    </div>`).join('');
+
+  document.getElementById('lb-content').innerHTML = `
+    <p class="lb-eyebrow">${trip.location||''}</p>
+    <h2 class="lb-title">${trip.title}</h2>
+    <p class="lb-date">${formatDate(trip.date)}</p>
+    <p class="lb-desc">${trip.description||''}</p>
+    ${photos ? `<div class="lb-photos">${photos}</div>` : ''}
+  `;
+  const lb = document.getElementById('lightbox');
+  lb.classList.add('open');
+  lb.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('lightbox').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeLightbox();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+loadData();
+</script>
+</body>
+</html>
